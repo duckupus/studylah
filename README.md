@@ -7,4 +7,3 @@ functionalities
 - alarm(?)
 - flashcards(?)
 - music/tts(?)
-- 
