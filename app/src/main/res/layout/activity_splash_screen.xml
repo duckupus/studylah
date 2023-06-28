@@ -24,7 +24,7 @@
             android:gravity="center"
             android:background="#a0a0a0"
             android:alpha="0.8"
-            android:text="@string/application_name"
+            android:text="@string/app_name"
             android:textSize="30sp" />
     </FrameLayout>
 
