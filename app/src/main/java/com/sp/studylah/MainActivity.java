@@ -1,72 +1,83 @@
 package com.sp.studylah;
 
+import android.content.Intent;
 import android.os.Bundle;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.appcompat.app.AppCompatActivity;
-import android.view.View;
-import androidx.core.view.WindowCompat;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-import com.sp.studylah.databinding.ActivityMainBinding;
+import static java.lang.Math.abs;
 
-import android.view.Menu;
-import android.view.MenuItem;
+import android.content.res.Resources;
+import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.CompositePageTransformer;
+import androidx.viewpager2.widget.MarginPageTransformer;
+import androidx.viewpager2.widget.ViewPager2;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.navigation.ui.AppBarConfiguration;
+import com.sp.studylah.databinding.ActivityMainBinding;
+import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
-private ActivityMainBinding binding;
+    private ActivityMainBinding binding;
+    private ViewPager2 viewPager;
+    private Button buttonView1;
+    private Button buttonView2;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-     binding = ActivityMainBinding.inflate(getLayoutInflater());
-     setContentView(binding.getRoot());
 
-        setSupportActionBar(binding.toolbar);
-
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-
-        binding.fab.setOnClickListener(new View.OnClickListener() {
+        buttonView1 = findViewById(R.id.button_view1);
+        buttonView1.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAnchorView(R.id.fab)
-                        .setAction("Action", null).show();
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, view1.class);
+                startActivity(intent);
             }
         });
-    }
-@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        buttonView2 = findViewById(R.id.button_view2);
+        buttonView2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, view2.class);
+                startActivity(intent);
+            }
+        });
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+        viewPager = findViewById(R.id.carousel_main_view_pager);
+        CarouselAdapter carouselAdapter = new CarouselAdapter();
+        carouselAdapter.setItems(new String[]{"Page 1", "Page 2", "Page 3", "Page 4", "Page 5"});
+        viewPager.setAdapter(carouselAdapter);
 
-        return super.onOptionsItemSelected(item);
-    }
+        ViewPager2.PageTransformer pageTransformer = new ViewPager2.PageTransformer() {
+            @Override
+            public void transformPage(@NonNull View page, float position) {
+                float absPosition = abs(position);
+                page.setScaleY(0.85f + absPosition * 0.15f);
+                CompositePageTransformer compositePageTransformer = new CompositePageTransformer();
+                compositePageTransformer.addTransformer(new MarginPageTransformer((int) (40 * Resources.getSystem().getDisplayMetrics().density)));
+                compositePageTransformer.addTransformer((page1, position1) -> {
+                    float r = (1 - abs(position1));
+                    page1.setScaleY(0.85f + r * 0.2f);
+                });
+                viewPager.setPageTransformer(compositePageTransformer);
+                viewPager.setClipChildren(false);
+                viewPager.setClipToPadding(false); //show viewpager without clipping
+                viewPager.setOffscreenPageLimit(3); //left and right items
+                RecyclerView recyclerView = (RecyclerView) viewPager.getChildAt(0);
+                recyclerView.setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
+            }
+        };
+        viewPager.setPageTransformer(pageTransformer);
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        return NavigationUI.navigateUp(navController, appBarConfiguration)
-                || super.onSupportNavigateUp();
+
     }
 }
