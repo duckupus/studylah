@@ -15,6 +15,9 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.ui.AppBarConfiguration;
+
+import com.sp.studylah.carousel_fragments.CarouselAdapter;
+import com.sp.studylah.carousel_fragments.FragmentCarouselAdapter;
 import com.sp.studylah.databinding.ActivityMainBinding;
 import android.widget.Button;
 
@@ -53,9 +56,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         viewPager = findViewById(R.id.carousel_main_view_pager);
-        CarouselAdapter carouselAdapter = new CarouselAdapter();
-        carouselAdapter.setItems(new String[]{"Page 1", "Page 2", "Page 3", "Page 4", "Page 5"});
-        viewPager.setAdapter(carouselAdapter);
+        //CarouselAdapter carouselAdapter = new CarouselAdapter();
+        //viewPager.setAdapter(carouselAdapter);
+        FragmentCarouselAdapter fragmentCarouselAdapter = new FragmentCarouselAdapter(this);
+        viewPager.setAdapter(fragmentCarouselAdapter);
 
         ViewPager2.PageTransformer pageTransformer = new ViewPager2.PageTransformer() {
             @Override
