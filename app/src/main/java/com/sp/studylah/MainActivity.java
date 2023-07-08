@@ -1,6 +1,5 @@
 package com.sp.studylah;
 
-import android.content.Intent;
 import android.os.Bundle;
 import static java.lang.Math.abs;
 
@@ -19,15 +18,11 @@ import androidx.navigation.ui.AppBarConfiguration;
 import com.sp.studylah.carousel_fragments.CarouselAdapter;
 import com.sp.studylah.carousel_fragments.FragmentCarouselAdapter;
 import com.sp.studylah.databinding.ActivityMainBinding;
-import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
 
-    private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
     private ViewPager2 viewPager;
-    private Button buttonView1;
-    private Button buttonView2;
 
 
     @Override
@@ -36,24 +31,6 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-
-        buttonView1 = findViewById(R.id.button_view1);
-        buttonView1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, view1.class);
-                startActivity(intent);
-            }
-        });
-
-        buttonView2 = findViewById(R.id.button_view2);
-        buttonView2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, view2.class);
-                startActivity(intent);
-            }
-        });
 
         viewPager = findViewById(R.id.carousel_main_view_pager);
         //CarouselAdapter carouselAdapter = new CarouselAdapter();
