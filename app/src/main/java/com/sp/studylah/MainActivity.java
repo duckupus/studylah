@@ -31,13 +31,6 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private ViewPager2 viewPager;
     private Button button;
-    private CalendarView calendarView;
-    private EditText editTextDescription;
-    private Button buttonSave;
-    private RadioGroup radioGroup;
-    private RadioButton radioButtonExam;
-    private RadioButton radioButtonAssignment;
-    private DatabaseHelper databaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,9 +51,6 @@ public class MainActivity extends AppCompatActivity {
         //viewPager.setAdapter(carouselAdapter);
         FragmentCarouselAdapter fragmentCarouselAdapter = new FragmentCarouselAdapter(this);
         viewPager.setAdapter(fragmentCarouselAdapter);
-    }
-
-
         ViewPager2.PageTransformer pageTransformer = new ViewPager2.PageTransformer() {
             @Override
             public void transformPage(@NonNull View page, float position) {
@@ -78,7 +68,10 @@ public class MainActivity extends AppCompatActivity {
                 viewPager.setOffscreenPageLimit(3); //left and right items
                 RecyclerView recyclerView = (RecyclerView) viewPager.getChildAt(0);
                 recyclerView.setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
-                viewPager.setPageTransformer(pageTransformer);
             }
         };
+        viewPager.setPageTransformer(pageTransformer);
     }
+
+
+}
