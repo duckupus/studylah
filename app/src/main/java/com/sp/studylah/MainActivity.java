@@ -1,10 +1,14 @@
 package com.sp.studylah;
 
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import static java.lang.Math.abs;
 
 import android.content.res.Resources;
+import android.provider.MediaStore;
 import android.view.View;
+import android.widget.CalendarView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,11 +23,25 @@ import com.sp.studylah.carousel_fragments.CarouselAdapter;
 import com.sp.studylah.carousel_fragments.FragmentCarouselAdapter;
 import com.sp.studylah.databinding.ActivityMainBinding;
 
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Toast;
+
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
     private ViewPager2 viewPager;
-
+    private CalendarView calendarView;
+    private EditText editTextDescription;
+    private Button buttonSave;
+    private RadioGroup radioGroup;
+    private RadioButton radioButtonExam;
+    private RadioButton radioButtonAssignment;
+    private DatabaseHelper databaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,12 +49,13 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-
         viewPager = findViewById(R.id.carousel_main_view_pager);
         //CarouselAdapter carouselAdapter = new CarouselAdapter();
         //viewPager.setAdapter(carouselAdapter);
         FragmentCarouselAdapter fragmentCarouselAdapter = new FragmentCarouselAdapter(this);
         viewPager.setAdapter(fragmentCarouselAdapter);
+    }
+
 
         ViewPager2.PageTransformer pageTransformer = new ViewPager2.PageTransformer() {
             @Override
@@ -55,10 +74,7 @@ public class MainActivity extends AppCompatActivity {
                 viewPager.setOffscreenPageLimit(3); //left and right items
                 RecyclerView recyclerView = (RecyclerView) viewPager.getChildAt(0);
                 recyclerView.setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
+                viewPager.setPageTransformer(pageTransformer);
             }
         };
-        viewPager.setPageTransformer(pageTransformer);
-
-
     }
-}

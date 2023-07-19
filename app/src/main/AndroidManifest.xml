@@ -22,6 +22,8 @@
             android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/AppTheme" />
+        <activity android:name=".CalendarViewActivity"
+            android:exported="true" />
         <activity
             android:name=".splashScreen"
             android:exported="true"
