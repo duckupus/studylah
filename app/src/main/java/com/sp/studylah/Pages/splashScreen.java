@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.sp.studylah.PageActivities.MainActivity;
+import com.sp.studylah.MainActivity;
 import com.sp.studylah.R;
 
 public class splashScreen extends Activity {

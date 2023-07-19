@@ -1,10 +1,7 @@
-package com.sp.studylah.PageActivities;
+package com.sp.studylah;
 
 import android.content.Intent;
 
-import android.content.Intent;
-import android.content.ContentValues;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import static java.lang.Math.abs;
 
@@ -22,11 +19,9 @@ import androidx.viewpager2.widget.ViewPager2;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.sp.studylah.Database.DatabaseHelper;
-import com.sp.studylah.R;
 import com.sp.studylah.carousel_fragments.FragmentCarouselAdapter;
 import com.sp.studylah.databinding.ActivityMainBinding;
 
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
