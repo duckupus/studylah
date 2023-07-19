@@ -44,4 +44,5 @@
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
     <string name="carousel_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sit amet lectus a mi lobortis iaculis. Mauris odio tortor, accumsan vel gravida sit amet, malesuada a tortor. Cras mattis augue eget dolor vestibulum, id euismod diam rutrum.</string>
+    <string name="title_activity_calendar_main">calendar_main</string>
 </resources>
