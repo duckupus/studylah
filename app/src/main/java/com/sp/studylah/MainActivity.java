@@ -1,10 +1,12 @@
 package com.sp.studylah;
 
+import android.content.Intent;
 import android.os.Bundle;
 import static java.lang.Math.abs;
 
 import android.content.res.Resources;
 import android.view.View;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,9 +15,6 @@ import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.navigation.ui.AppBarConfiguration;
-
-import com.sp.studylah.carousel_fragments.CarouselAdapter;
 import com.sp.studylah.carousel_fragments.FragmentCarouselAdapter;
 import com.sp.studylah.databinding.ActivityMainBinding;
 
@@ -23,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
     private ViewPager2 viewPager;
+    private Button button;
 
 
     @Override
@@ -33,6 +33,14 @@ public class MainActivity extends AppCompatActivity {
 
 
         viewPager = findViewById(R.id.carousel_main_view_pager);
+        button = findViewById(R.id.settings_button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, appSettingActivity.class);
+                startActivity(intent);
+            }
+        });
         //CarouselAdapter carouselAdapter = new CarouselAdapter();
         //viewPager.setAdapter(carouselAdapter);
         FragmentCarouselAdapter fragmentCarouselAdapter = new FragmentCarouselAdapter(this);
