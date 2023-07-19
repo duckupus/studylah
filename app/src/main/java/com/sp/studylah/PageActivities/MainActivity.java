@@ -1,12 +1,9 @@
-package com.sp.studylah;
+package com.sp.studylah.PageActivities;
 
-import android.content.ContentValues;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import static java.lang.Math.abs;
 
 import android.content.res.Resources;
-import android.provider.MediaStore;
 import android.view.View;
 import android.widget.CalendarView;
 
@@ -17,19 +14,16 @@ import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.navigation.ui.AppBarConfiguration;
 
-import com.sp.studylah.carousel_fragments.CarouselAdapter;
+import com.sp.studylah.Database.DatabaseHelper;
+import com.sp.studylah.R;
 import com.sp.studylah.carousel_fragments.FragmentCarouselAdapter;
 import com.sp.studylah.databinding.ActivityMainBinding;
 
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 

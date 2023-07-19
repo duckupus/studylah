@@ -1,4 +1,4 @@
-package com.sp.studylah;
+package com.sp.studylah.Pages;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,6 +12,10 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
+
+import com.sp.studylah.Database.DatabaseContract;
+import com.sp.studylah.Database.DatabaseHelper;
+import com.sp.studylah.R;
 
 public class view1 extends AppCompatActivity {
 

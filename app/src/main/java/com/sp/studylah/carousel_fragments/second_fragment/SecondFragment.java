@@ -10,11 +10,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
 
 import com.sp.studylah.R;
 import com.sp.studylah.databinding.FragmentSecondBinding;
-import com.sp.studylah.view2;
+import com.sp.studylah.Pages.view2;
 
 public class SecondFragment extends Fragment {
     private ConstraintLayout layout;

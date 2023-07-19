@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment;
 
 import com.sp.studylah.R;
 import com.sp.studylah.databinding.FragmentFirstBinding;
-import com.sp.studylah.view1;
+import com.sp.studylah.Pages.view1;
 
 public class FirstFragment extends Fragment {
 

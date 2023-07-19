@@ -1,4 +1,4 @@
-package com.sp.studylah;
+package com.sp.studylah.Database;
 import android.provider.BaseColumns;
 
 public final class DatabaseContract {
