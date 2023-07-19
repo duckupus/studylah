@@ -1,10 +1,16 @@
 package com.sp.studylah.PageActivities;
 
+import android.content.Intent;
+
+import android.content.Intent;
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import static java.lang.Math.abs;
 
 import android.content.res.Resources;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CalendarView;
 
 import androidx.annotation.NonNull;
@@ -29,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
     private ViewPager2 viewPager;
+    private Button button;
     private CalendarView calendarView;
     private EditText editTextDescription;
     private Button buttonSave;
@@ -44,6 +51,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         viewPager = findViewById(R.id.carousel_main_view_pager);
+        button = findViewById(R.id.settings_button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, appSettingActivity.class);
+                startActivity(intent);
+            }
+        });
         //CarouselAdapter carouselAdapter = new CarouselAdapter();
         //viewPager.setAdapter(carouselAdapter);
         FragmentCarouselAdapter fragmentCarouselAdapter = new FragmentCarouselAdapter(this);

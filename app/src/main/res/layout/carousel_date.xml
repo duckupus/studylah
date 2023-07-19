@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="4dp"
+    >
+        <!-- this will hold a week -->
+        <TextView
+            android:id="@+id/textview_date_carousel"
+            android:animateLayoutChanges="true"
+            android:layout_width="120dp"
+            android:layout_height="30dp"
+            android:gravity="center"
+            android:textColor="@color/md_theme_light_onPrimary" />
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+</LinearLayout>
