@@ -12,7 +12,9 @@
             android:animateLayoutChanges="true"
             android:layout_width="120dp"
             android:layout_height="30dp"
-            android:background="@drawable/rectangle_bar"
             android:gravity="center"
             android:textColor="@color/md_theme_light_onPrimary" />
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 </LinearLayout>
