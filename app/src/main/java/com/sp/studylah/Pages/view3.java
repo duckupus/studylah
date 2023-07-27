@@ -2,8 +2,9 @@ package com.sp.studylah.Pages;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
+import android.os.CountDownTimer;
 import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
@@ -11,18 +12,21 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.sp.studylah.MainActivity;
 import com.sp.studylah.R;
-import com.sp.studylah.carousel_fragments.timer.TimerHelper;
+import com.sp.studylah.carousel_fragments.timer.TimeHelper;
+import com.sp.studylah.carousel_fragments.timer.TimerHandler;
 
 public class view3 extends AppCompatActivity {
-    private Handler handler;
+    private TimerHandler handler;
     private TextView textView;
     private int timeRemaining;
-    private TimerHelper timerHelper;
+    private TimeHelper timeHelper;
     private EditText editTextHour;
     private EditText editTextMinute;
     private EditText editTextSecond;
     private Button button;
+    private Button toggleState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,48 +43,112 @@ public class view3 extends AppCompatActivity {
                 String inputHour = editTextHour.getText().toString();
                 String inputMinute = editTextMinute.getText().toString();
                 String inputSecond = editTextSecond.getText().toString();
-                if(!inputHour.equals("") && !inputMinute.equals("") && !inputSecond.equals("")) {
-                    int hour = Integer.parseInt(inputHour);
-                    int minute = Integer.parseInt(inputMinute);
-                    int second = Integer.parseInt(inputSecond);
+                int check = 0;
+                int hour = 0;
+                if(!inputHour.equals("")) {
+                    hour = Integer.parseInt(inputHour);
+                    check++;
+                }
+                int minute = 0;
+                if(!inputMinute.equals("")) {
+                    minute = Integer.parseInt(inputMinute);
+                    check++;
+                }
+                int second = 0;
+                if(!inputSecond.equals("")) {
+                    second = Integer.parseInt(inputSecond);
+                    check++;
+                }
+                if(check == 0) {
+                    Toast.makeText(getApplicationContext(), "Please enter a valid value!", Toast.LENGTH_SHORT).show();
+                } else {
                     timeRemaining = hour * 60 * 60 + minute * 60 + second;
-                    timerHelper = new TimerHelper(timeRemaining);
-                    handler = new Handler(Looper.getMainLooper());
+                    timeHelper = new TimeHelper(timeRemaining, TimeHelper.TimeHelperHelper.DOWN);
+                    handler = new TimerHandler(Looper.getMainLooper());
+                    //handler = new Handler(Looper.getMainLooper());
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
                             if (textView != null) {
-                                textView.setText("Time remaining: "+timerHelper.getTimeRemainingString());
+                                textView.setText("Time remaining: "+ timeHelper.getTimeRemainingString());
                             }
-                            timerHelper.decrementTimeRemaining();
-                            if (timerHelper.getTimeRemaining() >= 0) {
-                                handler.postDelayed(this, 1000);
+                            if(timeHelper.isRunning()) {
+                                timeHelper.tick();
+                                if (timeHelper.getTimeRemaining() >= 0) {
+                                    handler.postDelayed(this, 1000);
+                                } else {
+                                    Toast.makeText(getApplicationContext(), "Time's up!", Toast.LENGTH_SHORT).show();
+                                }
                             }
                         }
                     });
-                } else {
-                    Toast.makeText(getApplicationContext(), "Please enter a value!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+
         textView.setText("Time remaining: 00:00:00");
 
-        timeRemaining = 2 *60*60 + 10*60 + 12;
-        timerHelper = new TimerHelper(timeRemaining);
-        handler = new Handler(Looper.getMainLooper());
-        /*
-        handler.post(new Runnable() {
+        Bundle bundle = getIntent().getExtras();
+        if(bundle != null) {
+            timeHelper = (TimeHelper) bundle.getSerializable("TimerInstance");
+            handler = (TimerHandler) bundle.getSerializable("TimerHelper");
+            if(handler != null && timeHelper != null) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (textView != null) {
+                            textView.setText("Time remaining: "+ timeHelper.getTimeRemainingString());
+                        }
+                        if(timeHelper.isRunning()) {
+                            timeHelper.tick();
+                            if (timeHelper.getTimeRemaining() >= 0) {
+                                handler.postDelayed(this, 1000);
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Time's up!", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+                });
+            }
+        }
+        toggleState = findViewById(R.id.buttonTimerViewStartStop);
+        toggleState.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void run() {
-                if (textView != null) {
-                    textView.setText(timerHelper.getTimeRemainingString());
-                }
-                timerHelper.decrementTimeRemaining();
-                if (timerHelper.getTimeRemaining() >= 0) {
-                    handler.postDelayed(this, 100);
+            public void onClick(View v) {
+                if(timeHelper != null) {
+                    if (timeHelper.isRunning()) {
+                        timeHelper.stop();
+                    } else {
+                        timeHelper.cont();
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (textView != null) {
+                                    textView.setText("Time remaining: "+ timeHelper.getTimeRemainingString());
+                                }
+                                if(timeHelper.isRunning()) {
+                                    timeHelper.tick();
+                                    if (timeHelper.getTimeRemaining() >= 0) {
+                                        handler.postDelayed(this, 1000);
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "Time's up!", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            }
+                        });
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), "No timer active!", Toast.LENGTH_SHORT).show();
                 }
             }
-        }); */
-
+        });
+    }
+    @Override
+    public void finish() {
+        super.finish();
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("TimerInstance", timeHelper);
+        intent.putExtra("TimerHelper", handler);
+        startActivity(intent);
     }
 }
