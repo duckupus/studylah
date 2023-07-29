@@ -27,6 +27,7 @@ public class view3 extends AppCompatActivity {
     private EditText editTextSecond;
     private Button button;
     private Button toggleState;
+    private TimerHandler countDownTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,92 +64,74 @@ public class view3 extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Please enter a valid value!", Toast.LENGTH_SHORT).show();
                 } else {
                     timeRemaining = hour * 60 * 60 + minute * 60 + second;
-                    timeHelper = new TimeHelper(timeRemaining, TimeHelper.TimeHelperHelper.DOWN);
-                    handler = new TimerHandler(Looper.getMainLooper());
-                    //handler = new Handler(Looper.getMainLooper());
-                    handler.post(new Runnable() {
+
+                    if(timeHelper != null && countDownTimer != null) {
+                        countDownTimer.cancel();
+                    }
+                    timeHelper = new TimeHelper(timeRemaining);
+                    countDownTimer = new TimerHandler(timeRemaining * 1000L, 1000) {
                         @Override
-                        public void run() {
-                            if (textView != null) {
-                                textView.setText("Time remaining: "+ timeHelper.getTimeRemainingString());
-                            }
-                            if(timeHelper.isRunning()) {
-                                timeHelper.tick();
-                                if (timeHelper.getTimeRemaining() >= 0) {
-                                    handler.postDelayed(this, 1000);
-                                } else {
-                                    Toast.makeText(getApplicationContext(), "Time's up!", Toast.LENGTH_SHORT).show();
-                                }
-                            }
+                        public void onTick(long millisUntilFinished) {
+                            timeHelper.setTime((int) (millisUntilFinished / 1000));
+                            textView.setText(timeHelper.getTimeRemainingString());
+
                         }
-                    });
+
+                        @Override
+                        public void onFinish() {
+                            textView.setText("Time's up!");
+                        }
+                    };
+                    countDownTimer.start();
                 }
             }
         });
-
-        textView.setText("Time remaining: 00:00:00");
-
-        Bundle bundle = getIntent().getExtras();
-        if(bundle != null) {
-            timeHelper = (TimeHelper) bundle.getSerializable("TimerInstance");
-            handler = (TimerHandler) bundle.getSerializable("TimerHelper");
-            if(handler != null && timeHelper != null) {
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (textView != null) {
-                            textView.setText("Time remaining: "+ timeHelper.getTimeRemainingString());
-                        }
-                        if(timeHelper.isRunning()) {
-                            timeHelper.tick();
-                            if (timeHelper.getTimeRemaining() >= 0) {
-                                handler.postDelayed(this, 1000);
-                            } else {
-                                Toast.makeText(getApplicationContext(), "Time's up!", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    }
-                });
-            }
-        }
         toggleState = findViewById(R.id.buttonTimerViewStartStop);
         toggleState.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(timeHelper != null) {
-                    if (timeHelper.isRunning()) {
-                        timeHelper.stop();
+                if(countDownTimer != null) {
+                    if(timeHelper.isRunning()) {
+                        countDownTimer.cancel();
                     } else {
-                        timeHelper.cont();
-                        handler.post(new Runnable() {
+                        countDownTimer = new TimerHandler(timeHelper.getTimeRemaining() * 1000L, 1000) {
                             @Override
-                            public void run() {
-                                if (textView != null) {
-                                    textView.setText("Time remaining: "+ timeHelper.getTimeRemainingString());
-                                }
-                                if(timeHelper.isRunning()) {
-                                    timeHelper.tick();
-                                    if (timeHelper.getTimeRemaining() >= 0) {
-                                        handler.postDelayed(this, 1000);
-                                    } else {
-                                        Toast.makeText(getApplicationContext(), "Time's up!", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
+                            public void onTick(long millisUntilFinished) {
+                                timeHelper.setTime((int) (millisUntilFinished / 1000));
+                                textView.setText(timeHelper.getTimeRemainingString());
+
                             }
-                        });
+
+                            @Override
+                            public void onFinish() {
+                                textView.setText("Time's up!");
+                            }
+                        };
+                        countDownTimer.start();
                     }
+                    timeHelper.toggleState();
                 } else {
-                    Toast.makeText(getApplicationContext(), "No timer active!", Toast.LENGTH_SHORT).show();
+                    button.performClick();
                 }
             }
         });
+
+
+        textView.setText("Time remaining: 00:00:00");
+
+        Bundle bundle = getIntent().getExtras();
     }
     @Override
     public void finish() {
         super.finish();
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("TimerInstance", timeHelper);
-        intent.putExtra("TimerHelper", handler);
-        startActivity(intent);
+        if(timeHelper != null) {
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra("TimerInstance", timeHelper);
+            startActivity(intent);
+        }
+        //intent.putExtra("TimerHelper", countDownTimer);
+        if(countDownTimer != null) {
+            countDownTimer.cancel();
+        }
     }
 }

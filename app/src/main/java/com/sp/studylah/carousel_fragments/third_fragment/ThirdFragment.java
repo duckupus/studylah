@@ -45,10 +45,10 @@ public class ThirdFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), view3.class);
                 if(timeHelper != null) {
                     intent.putExtra("TimerInstance", timeHelper);
-                }
+                }/*
                 if(handler != null) {
                     intent.putExtra("TimerHelper", handler);
-                }
+                }*/
                 startActivity(intent);
             }
         });
@@ -60,28 +60,28 @@ public class ThirdFragment extends Fragment {
                 if(timeHelper == null) {
                     textView.setText("No timer active!");
                 } else {
-                    if (timeHelper.getCountType() == TimeHelper.TimeHelperHelper.DOWN) {
-                        timeHelper.addTime(1);
-                    } else timeHelper.subtractTime(1);
-                    timeHelper.toggle();
                     if (timeHelper.isRunning()) {
                         if (handler != null) {
-                            handler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    timeHelper.tick();
-                                    textView.setText(timeHelper.getTimeRemainingString());
-                                    if (timeHelper.isRunning()) {
-                                        if (timeHelper.getTimeRemaining() > 0) {
-                                            handler.postDelayed(this, 1000); //yeah... good luck
-                                        } else {
-                                            textView.setText("Timer has ended");
-                                        }
-                                    }
-                                }
-                            }, 1000);
+                            handler.cancel();
+                            handler = null;
                         }
+                    } else {
+                        handler = new TimerHandler(timeHelper.getTimeRemaining() * 1000L, 1000) {
+                            @Override
+                            public void onTick(long millisUntilFinished) {
+                                timeHelper.setTime((int) (millisUntilFinished / 1000));
+                                textView.setText(timeHelper.getTimeRemainingString());
+                            }
+
+                            @Override
+                            public void onFinish() {
+                                textView.setText("Timer finished!");
+                                timeHelper.toggleState();
+                            }
+                        };
+                        handler.start();
                     }
+                    timeHelper.toggleState();
                 }
             }
         });
@@ -90,7 +90,22 @@ public class ThirdFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(timeHelper != null) {
-                    timeHelper.addTime(60);
+                    handler.cancel();
+                    handler = new TimerHandler(timeHelper.getTimeRemaining() * 1000L + 60*1000L, 1000) {
+                        @Override
+                        public void onTick(long millisUntilFinished) {
+                            timeHelper.setTime((int) (millisUntilFinished / 1000));
+                            textView.setText(timeHelper.getTimeRemainingString());
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            super.onFinish();
+                            textView.setText("Timer has ended");
+                            handler = null;
+                            timeHelper = null;
+                        }
+                    };
                     textView.setText(timeHelper.getTimeRemainingString());
                 } else textView.setText("No timer active!");
             }
@@ -100,7 +115,23 @@ public class ThirdFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(timeHelper != null) {
-                    timeHelper.subtractTime(60);
+                    handler.cancel();
+                    handler = new TimerHandler(timeHelper.getTimeRemaining() * 1000L - 60*1000L, 1000) {
+                        @Override
+                        public void onTick(long millisUntilFinished) {
+                            timeHelper.setTime((int) (millisUntilFinished / 1000));
+                            textView.setText(timeHelper.getTimeRemainingString());
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            super.onFinish();
+                            textView.setText("Timer has ended");
+                            handler = null;
+                            timeHelper = null;
+                        }
+                    };
+                    textView.setText(timeHelper.getTimeRemainingString());
                     textView.setText(timeHelper.getTimeRemainingString());
                 } else textView.setText("No timer active!");
             }
@@ -115,23 +146,45 @@ public class ThirdFragment extends Fragment {
             timeHelper = (TimeHelper) bundle.getSerializable("TimerInstance");
             if(timeHelper != null) {
                 textView.setText(timeHelper.getTimeRemainingString());
+                if(timeHelper.isRunning()) {
+                    handler = new TimerHandler(timeHelper.getTimeRemaining() * 1000L, 1000) {
+                        @Override
+                        public void onTick(long millisUntilFinished) {
+                            timeHelper.setTime((int) (millisUntilFinished / 1000));
+                            textView.setText(timeHelper.getTimeRemainingString());
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            super.onFinish();
+                            textView.setText("Timer has ended");
+                            handler = null;
+                            timeHelper = null;
+                        }
+                    };
+                    handler.start();
+                }
+                /*
                 handler = (TimerHandler) bundle.getSerializable("TimerHelper");
                 if(handler != null) {
-                    handler.postDelayed(new Runnable() {
+                    handler.cancel();
+                    handler = new TimerHandler(timeHelper.getTimeRemaining() * 1000L, 1000) {
                         @Override
-                        public void run() {
-                            timeHelper.tick();
+                        public void onTick(long millisUntilFinished) {
+                            timeHelper.setTime((int) (millisUntilFinished / 1000));
                             textView.setText(timeHelper.getTimeRemainingString());
-                            if (timeHelper.isRunning()) {
-                                if (timeHelper.getTimeRemaining() > 0) {
-                                    handler.postDelayed(this, 1000); //yeah... good luck
-                                } else {
-                                    textView.setText("Timer has ended");
-                                }
-                            }
                         }
-                    }, 1000);
+
+                        @Override
+                        public void onFinish() {
+                            super.onFinish();
+                            textView.setText("Timer has ended");
+                            handler = null;
+                            timeHelper = null;
+                        }
+                    };
                 }
+                 */
             } else {
                 textView.setText("No timer set");
             }
