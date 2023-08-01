@@ -90,22 +90,25 @@ public class ThirdFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(timeHelper != null) {
-                    handler.cancel();
-                    handler = new TimerHandler(timeHelper.getTimeRemaining() * 1000L + 60*1000L, 1000) {
-                        @Override
-                        public void onTick(long millisUntilFinished) {
-                            timeHelper.setTime((int) (millisUntilFinished / 1000));
-                            textView.setText(timeHelper.getTimeRemainingString());
-                        }
+                    timeHelper.setTime(timeHelper.getTimeRemaining() + 60);
+                    if(handler != null) {
+                        handler.cancel();
+                        handler = new TimerHandler(timeHelper.getTimeRemaining() * 1000L, 1000) {
+                            @Override
+                            public void onTick(long millisUntilFinished) {
+                                timeHelper.setTime((int) (millisUntilFinished / 1000));
+                                textView.setText(timeHelper.getTimeRemainingString());
+                            }
 
-                        @Override
-                        public void onFinish() {
-                            super.onFinish();
-                            textView.setText("Timer has ended");
-                            handler = null;
-                            timeHelper = null;
-                        }
-                    };
+                            @Override
+                            public void onFinish() {
+                                super.onFinish();
+                                textView.setText("Timer has ended");
+                                handler = null;
+                                timeHelper = null;
+                            }
+                        };
+                    }
                     textView.setText(timeHelper.getTimeRemainingString());
                 } else textView.setText("No timer active!");
             }
@@ -115,23 +118,25 @@ public class ThirdFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(timeHelper != null) {
-                    handler.cancel();
-                    handler = new TimerHandler(timeHelper.getTimeRemaining() * 1000L - 60*1000L, 1000) {
-                        @Override
-                        public void onTick(long millisUntilFinished) {
-                            timeHelper.setTime((int) (millisUntilFinished / 1000));
-                            textView.setText(timeHelper.getTimeRemainingString());
-                        }
+                    timeHelper.setTime(timeHelper.getTimeRemaining() - 60);
+                    if(handler != null) {
+                        handler.cancel();
+                        handler = new TimerHandler(timeHelper.getTimeRemaining() * 1000L, 1000) {
+                            @Override
+                            public void onTick(long millisUntilFinished) {
+                                timeHelper.setTime((int) (millisUntilFinished / 1000));
+                                textView.setText(timeHelper.getTimeRemainingString());
+                            }
 
-                        @Override
-                        public void onFinish() {
-                            super.onFinish();
-                            textView.setText("Timer has ended");
-                            handler = null;
-                            timeHelper = null;
-                        }
-                    };
-                    textView.setText(timeHelper.getTimeRemainingString());
+                            @Override
+                            public void onFinish() {
+                                super.onFinish();
+                                textView.setText("Timer has ended");
+                                handler = null;
+                                timeHelper = null;
+                            }
+                        };
+                    }
                     textView.setText(timeHelper.getTimeRemainingString());
                 } else textView.setText("No timer active!");
             }
