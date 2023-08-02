@@ -2,10 +2,9 @@ package com.sp.studylah.Pages;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,6 +13,7 @@ import android.widget.Toast;
 
 import com.sp.studylah.MainActivity;
 import com.sp.studylah.R;
+import com.sp.studylah.TimerService;
 import com.sp.studylah.carousel_fragments.timer.TimeHelper;
 import com.sp.studylah.carousel_fragments.timer.TimerHandler;
 
@@ -63,9 +63,24 @@ public class view3 extends AppCompatActivity {
                 if(check == 0) {
                     Toast.makeText(getApplicationContext(), "Please enter a valid value!", Toast.LENGTH_SHORT).show();
                 } else {
+                    /*
+                    Intent notificationIntent = new Intent(getApplicationContext(), view3.class);
+                    PendingIntent pendingIntent = PendingIntent.getActivity(view3.this,
+                            0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
+                    Notification notification = new Notification.Builder(view3.this, "Timer")
+                            .setContentTitle("Timer")
+                            .setContentText("Timer is running!")
+                            .setSmallIcon(R.drawable.ic_launcher_foreground)
+                            .setContentIntent(pendingIntent).build();
+                    getBaseContext().startForegroundService(notificationIntent);
+                     */
+                    Context context = getApplicationContext();
+                    Intent intent = new Intent(context, TimerService.class);
+                    context.startForegroundService(intent);
+
                     timeRemaining = hour * 60 * 60 + minute * 60 + second;
 
-                    if(timeHelper != null && countDownTimer != null) {
+                    if(timeHelper != null) {
                         countDownTimer.cancel();
                     }
                     timeHelper = new TimeHelper(timeRemaining);

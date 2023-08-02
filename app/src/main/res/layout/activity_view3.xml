@@ -84,6 +84,25 @@
             android:text="Start/Stop"
             />
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <androidx.viewpager2.widget.ViewPager2
+                android:layout_width="100dp"
+                android:layout_height="300dp"
+                android:orientation="vertical"
+                android:id="@+id/view_pager_time_hours"/>
+            <androidx.viewpager2.widget.ViewPager2
+                android:layout_width="100dp"
+                android:layout_height="300dp"
+                android:orientation="vertical"
+                android:id="@+id/view_pager_time_minutes"/>
+            <androidx.viewpager2.widget.ViewPager2
+                android:layout_width="100dp"
+                android:layout_height="300dp"
+                android:orientation="vertical"
+                android:id="@+id/view_pager_time_seconds"/>
+        </LinearLayout>
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
