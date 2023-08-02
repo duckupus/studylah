@@ -6,10 +6,4 @@
     android:id="@+id/fragment_third"
     android:background="@drawable/rectangle_border"
     tools:context=".carousel_fragments.third_fragment.ThirdFragment">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

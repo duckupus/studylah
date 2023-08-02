@@ -7,12 +7,4 @@
     android:id="@+id/fragment_first"
     android:layout_gravity="center_horizontal|top"
     android:background="@drawable/rectangle_border">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        android:id="@+id/todayAssignments"
-        />
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
