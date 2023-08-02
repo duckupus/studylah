@@ -3,6 +3,7 @@ package com.sp.studylah.Pages;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import com.sp.studylah.Database.DatabaseContract;
 import com.sp.studylah.Database.DatabaseHelper;
+import com.sp.studylah.MainActivity;
 import com.sp.studylah.R;
 
 public class view1 extends AppCompatActivity {
@@ -72,6 +74,10 @@ public class view1 extends AppCompatActivity {
         values.put(DatabaseContract.AssignmentEntry.COLUMN_DATE, dateInMillis);
         values.put(DatabaseContract.AssignmentEntry.COLUMN_DESCRIPTION, description);
         long newRowId = db.insert(DatabaseContract.AssignmentEntry.TABLE_NAME, null, values);
+
+        Intent intent = new Intent(view1.this, MainActivity.class);
+        startActivity(intent);
+        finish();
 
         //check if data was saved
         if (newRowId != 1) {

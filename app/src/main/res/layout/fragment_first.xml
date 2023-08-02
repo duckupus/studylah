@@ -7,23 +7,4 @@
     android:id="@+id/fragment_first"
     android:layout_gravity="center_horizontal"
     android:background="@drawable/rectangle_border">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingTop="20dp"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:paddingBottom="20dp"
-        android:gravity="center_horizontal"
-        >
-            <TextView
-                android:layout_height="200dp"
-                android:layout_width="300dp"
-                android:text="fufu"
-                android:id="@+id/todayAssignments"
-                android:background="@drawable/rectangle_bar"/>
-
-    </LinearLayout>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

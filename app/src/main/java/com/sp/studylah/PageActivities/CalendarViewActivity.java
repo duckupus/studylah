@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
+import android.widget.CursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sp.studylah.Database.DatabaseContract;
 import com.sp.studylah.Database.DatabaseHelper;
@@ -23,7 +25,7 @@ public class CalendarViewActivity extends Activity{
 
         private DatabaseHelper databaseHelper;
 
-        @Override
+    @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_calendar_view);
@@ -51,6 +53,7 @@ public class CalendarViewActivity extends Activity{
                     finish();
                 }
             });
+
         }
 
         private void showAssignment(int year, int month, int dayOfMonth) {
@@ -93,7 +96,8 @@ public class CalendarViewActivity extends Activity{
             cursor.close();
         }
 
-        @Override
+
+    @Override
         protected void onDestroy() {
             super.onDestroy();
             // Close the database helper when the activity is destroyed

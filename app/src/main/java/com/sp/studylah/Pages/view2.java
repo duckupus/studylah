@@ -5,7 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.sp.studylah.PageActivities.AssignmentCursorAdapter;
 import com.sp.studylah.Database.DatabaseContract;
@@ -47,15 +50,50 @@ public class view2 extends AppCompatActivity {
                         null,
                         null
                 );
-
                 // Create a custom CursorAdapter to populate the ListView
                 cursorAdapter = new AssignmentCursorAdapter(this, cursor);
 
                 // Set the adapter for the ListView
                 listViewAssignments.setAdapter(cursorAdapter);
+
+                // Find the clear button by ID
+                Button buttonClear = findViewById(R.id.buttonClear);
+
+                // Set the OnClickListener for the clear button
+                buttonClear.setOnClickListener (new View.OnClickListener() {
+                @Override
+                    public void onClick(View v) {
+                        clearAssignments();
+                    }
+                });
             }
 
-            @Override
+            // Method to clear the assignments
+    private void clearAssignments() {
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        int deletedRows = db.delete(
+                DatabaseContract.AssignmentEntry.TABLE_NAME,null,null
+        );
+        if (deletedRows > 0) {
+            // Reload the ListView with updated data
+            Cursor updatedCursor = db.query(
+                    DatabaseContract.AssignmentEntry.TABLE_NAME,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+            );
+            cursorAdapter.swapCursor(updatedCursor);
+            Toast.makeText(this, "Assignments Cleared", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Assignments Not Cleared", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    @Override
             protected void onDestroy() {
                 super.onDestroy();
                 // Close the database helper and cursor when the activity is destroyed
