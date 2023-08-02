@@ -7,7 +7,6 @@
     android:id="@+id/fragment_third"
     tools:context=".Pages.view3">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -32,46 +31,78 @@
         </androidx.cardview.widget.CardView>
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            >
             <EditText
                 android:id="@+id/editTextTimerViewHour"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:inputType="number|numberDecimal" />
+                android:textColor="#101010"
+                android:inputType="number" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="#101010"
                 android:text="h"/>
             <EditText
                 android:id="@+id/editTextTimerViewMinute"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:inputType="number|numberDecimal" />
+                android:textColor="#101010"
+                android:inputType="number" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="#101010"
                 android:text="m"/>
             <EditText
                 android:id="@+id/editTextTimerViewSecond"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:inputType="number|numberDecimal" />
+                android:textColor="#101010"
+                android:inputType="number" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="#101010"
                 android:text="s"/>
 
         </LinearLayout>
         <Button
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/buttonTimerView"
             android:text="countdown!"
             />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/buttonTimerViewStartStop"
+            android:text="Start/Stop"
+            />
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <androidx.viewpager2.widget.ViewPager2
+                android:layout_width="100dp"
+                android:layout_height="300dp"
+                android:orientation="vertical"
+                android:id="@+id/view_pager_time_hours"/>
+            <androidx.viewpager2.widget.ViewPager2
+                android:layout_width="100dp"
+                android:layout_height="300dp"
+                android:orientation="vertical"
+                android:id="@+id/view_pager_time_minutes"/>
+            <androidx.viewpager2.widget.ViewPager2
+                android:layout_width="100dp"
+                android:layout_height="300dp"
+                android:orientation="vertical"
+                android:id="@+id/view_pager_time_seconds"/>
+        </LinearLayout>
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,27 +2,32 @@ package com.sp.studylah.Pages;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.sp.studylah.MainActivity;
 import com.sp.studylah.R;
-import com.sp.studylah.carousel_fragments.timer.TimerHelper;
+import com.sp.studylah.TimerService;
+import com.sp.studylah.carousel_fragments.timer.TimeHelper;
+import com.sp.studylah.carousel_fragments.timer.TimerHandler;
 
 public class view3 extends AppCompatActivity {
-    private Handler handler;
+    private TimerHandler handler;
     private TextView textView;
     private int timeRemaining;
-    private TimerHelper timerHelper;
+    private TimeHelper timeHelper;
     private EditText editTextHour;
     private EditText editTextMinute;
     private EditText editTextSecond;
     private Button button;
+    private Button toggleState;
+    private TimerHandler countDownTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,48 +44,109 @@ public class view3 extends AppCompatActivity {
                 String inputHour = editTextHour.getText().toString();
                 String inputMinute = editTextMinute.getText().toString();
                 String inputSecond = editTextSecond.getText().toString();
-                if(!inputHour.equals("") && !inputMinute.equals("") && !inputSecond.equals("")) {
-                    int hour = Integer.parseInt(inputHour);
-                    int minute = Integer.parseInt(inputMinute);
-                    int second = Integer.parseInt(inputSecond);
-                    timeRemaining = hour * 60 * 60 + minute * 60 + second;
-                    timerHelper = new TimerHelper(timeRemaining);
-                    handler = new Handler(Looper.getMainLooper());
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (textView != null) {
-                                textView.setText("Time remaining: "+timerHelper.getTimeRemainingString());
-                            }
-                            timerHelper.decrementTimeRemaining();
-                            if (timerHelper.getTimeRemaining() >= 0) {
-                                handler.postDelayed(this, 1000);
-                            }
-                        }
-                    });
+                int check = 0;
+                int hour = 0;
+                if(!inputHour.equals("")) {
+                    hour = Integer.parseInt(inputHour);
+                    check++;
+                }
+                int minute = 0;
+                if(!inputMinute.equals("")) {
+                    minute = Integer.parseInt(inputMinute);
+                    check++;
+                }
+                int second = 0;
+                if(!inputSecond.equals("")) {
+                    second = Integer.parseInt(inputSecond);
+                    check++;
+                }
+                if(check == 0) {
+                    Toast.makeText(getApplicationContext(), "Please enter a valid value!", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getApplicationContext(), "Please enter a value!", Toast.LENGTH_SHORT).show();
+                    /*
+                    Intent notificationIntent = new Intent(getApplicationContext(), view3.class);
+                    PendingIntent pendingIntent = PendingIntent.getActivity(view3.this,
+                            0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
+                    Notification notification = new Notification.Builder(view3.this, "Timer")
+                            .setContentTitle("Timer")
+                            .setContentText("Timer is running!")
+                            .setSmallIcon(R.drawable.ic_launcher_foreground)
+                            .setContentIntent(pendingIntent).build();
+                    getBaseContext().startForegroundService(notificationIntent);
+                     */
+                    Context context = getApplicationContext();
+                    Intent intent = new Intent(context, TimerService.class);
+                    context.startForegroundService(intent);
+
+                    timeRemaining = hour * 60 * 60 + minute * 60 + second;
+
+                    if(timeHelper != null) {
+                        countDownTimer.cancel();
+                    }
+                    timeHelper = new TimeHelper(timeRemaining);
+                    countDownTimer = new TimerHandler(timeRemaining * 1000L, 1000) {
+                        @Override
+                        public void onTick(long millisUntilFinished) {
+                            timeHelper.setTime((int) (millisUntilFinished / 1000));
+                            textView.setText(timeHelper.getTimeRemainingString());
+
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            textView.setText("Time's up!");
+                        }
+                    };
+                    countDownTimer.start();
                 }
             }
         });
-        textView.setText("Time remaining: 00:00:00");
-
-        timeRemaining = 2 *60*60 + 10*60 + 12;
-        timerHelper = new TimerHelper(timeRemaining);
-        handler = new Handler(Looper.getMainLooper());
-        /*
-        handler.post(new Runnable() {
+        toggleState = findViewById(R.id.buttonTimerViewStartStop);
+        toggleState.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void run() {
-                if (textView != null) {
-                    textView.setText(timerHelper.getTimeRemainingString());
-                }
-                timerHelper.decrementTimeRemaining();
-                if (timerHelper.getTimeRemaining() >= 0) {
-                    handler.postDelayed(this, 100);
+            public void onClick(View v) {
+                if(countDownTimer != null) {
+                    if(timeHelper.isRunning()) {
+                        countDownTimer.cancel();
+                    } else {
+                        countDownTimer = new TimerHandler(timeHelper.getTimeRemaining() * 1000L, 1000) {
+                            @Override
+                            public void onTick(long millisUntilFinished) {
+                                timeHelper.setTime((int) (millisUntilFinished / 1000));
+                                textView.setText(timeHelper.getTimeRemainingString());
+
+                            }
+
+                            @Override
+                            public void onFinish() {
+                                textView.setText("Time's up!");
+                            }
+                        };
+                        countDownTimer.start();
+                    }
+                    timeHelper.toggleState();
+                } else {
+                    button.performClick();
                 }
             }
-        }); */
+        });
 
+
+        textView.setText("Time remaining: 00:00:00");
+
+        Bundle bundle = getIntent().getExtras();
+    }
+    @Override
+    public void finish() {
+        super.finish();
+        if(timeHelper != null) {
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra("TimerInstance", timeHelper);
+            startActivity(intent);
+        }
+        //intent.putExtra("TimerHelper", countDownTimer);
+        if(countDownTimer != null) {
+            countDownTimer.cancel();
+        }
     }
 }
