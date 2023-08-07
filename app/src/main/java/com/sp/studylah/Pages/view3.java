@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,7 +21,7 @@ import com.sp.studylah.carousel_fragments.timer.TimerHandler;
 public class view3 extends AppCompatActivity {
     private TimerHandler handler;
     private TextView textView;
-    private int timeRemaining;
+    private long timeRemaining;
     private TimeHelper timeHelper;
     private EditText editTextHour;
     private EditText editTextMinute;
@@ -28,6 +29,7 @@ public class view3 extends AppCompatActivity {
     private Button button;
     private Button toggleState;
     private TimerHandler countDownTimer;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,18 +80,19 @@ public class view3 extends AppCompatActivity {
                     Intent intent = new Intent(context, TimerService.class);
                     context.startForegroundService(intent);
 
-                    timeRemaining = hour * 60 * 60 + minute * 60 + second;
+                    timeRemaining = (long) hour * 60 * 60 + minute * 60L + second;
+                    timeRemaining *= 1000;
 
-                    if(timeHelper != null) {
+                    if(timeHelper != null && countDownTimer != null) {
                         countDownTimer.cancel();
                     }
                     timeHelper = new TimeHelper(timeRemaining);
-                    countDownTimer = new TimerHandler(timeRemaining * 1000L, 1000) {
+                    countDownTimer = new TimerHandler(timeRemaining, 100) {
                         @Override
                         public void onTick(long millisUntilFinished) {
-                            timeHelper.setTime((int) (millisUntilFinished / 1000));
+                            timeHelper.setTime(millisUntilFinished);
                             textView.setText(timeHelper.getTimeRemainingString());
-
+                            progressBar.setProgress((int) (timeHelper.getProgress()/10), true);
                         }
 
                         @Override
@@ -109,17 +112,20 @@ public class view3 extends AppCompatActivity {
                     if(timeHelper.isRunning()) {
                         countDownTimer.cancel();
                     } else {
-                        countDownTimer = new TimerHandler(timeHelper.getTimeRemaining() * 1000L, 1000) {
+                        countDownTimer = new TimerHandler(timeHelper.getTimeRemaining(), 100) {
                             @Override
                             public void onTick(long millisUntilFinished) {
-                                timeHelper.setTime((int) (millisUntilFinished / 1000));
+                                timeHelper.setTime(millisUntilFinished);
                                 textView.setText(timeHelper.getTimeRemainingString());
+                                progressBar.setProgress((int) (timeHelper.getProgress()/10), true);
 
                             }
 
                             @Override
                             public void onFinish() {
                                 textView.setText("Time's up!");
+                                timeHelper = null;
+                                countDownTimer = null;
                             }
                         };
                         countDownTimer.start();
@@ -130,11 +136,41 @@ public class view3 extends AppCompatActivity {
                 }
             }
         });
+        progressBar = findViewById(R.id.progressBarTimerView);
+        progressBar.setMax(100);
+        progressBar.setProgress(0, true);
+        if(timeHelper != null) {
+            progressBar.setProgress((int) (timeHelper.getTimeRemaining()/10), true);
+        }
 
 
         textView.setText("Time remaining: 00:00:00");
 
         Bundle bundle = getIntent().getExtras();
+        if(bundle != null) {
+            timeHelper = (TimeHelper) bundle.getSerializable("TimerInstance");
+            if(timeHelper != null) {
+                textView.setText(timeHelper.getTimeRemainingString());
+                progressBar.setProgress((int) (timeHelper.getProgress()/10), true);
+                if(timeHelper.isRunning()) {
+                    handler = new TimerHandler(timeHelper.getTimeRemaining(), 100) {
+                        @Override
+                        public void onTick(long millisUntilFinished) {
+                            timeHelper.setTime(millisUntilFinished);
+                            textView.setText(timeHelper.getTimeRemainingString());
+                            progressBar.setProgress((int) (timeHelper.getProgress()/10), true);
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            textView.setText("Time's up!");
+                            timeHelper = null;
+                            handler = null;
+                        }
+                    };
+                }
+            }
+        }
     }
     @Override
     public void finish() {

@@ -45,10 +45,10 @@ public class ThirdFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), view3.class);
                 if(timeHelper != null) {
                     intent.putExtra("TimerInstance", timeHelper);
-                }/*
+                }
                 if(handler != null) {
-                    intent.putExtra("TimerHelper", handler);
-                }*/
+                    handler.cancel();
+                }
                 startActivity(intent);
             }
         });
@@ -66,10 +66,10 @@ public class ThirdFragment extends Fragment {
                             handler = null;
                         }
                     } else {
-                        handler = new TimerHandler(timeHelper.getTimeRemaining() * 1000L, 1000) {
+                        handler = new TimerHandler(timeHelper.getTimeRemaining(), 100) {
                             @Override
                             public void onTick(long millisUntilFinished) {
-                                timeHelper.setTime((int) (millisUntilFinished / 1000));
+                                timeHelper.setTime(millisUntilFinished);
                                 textView.setText(timeHelper.getTimeRemainingString());
                             }
 
@@ -90,13 +90,13 @@ public class ThirdFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(timeHelper != null) {
-                    timeHelper.setTime(timeHelper.getTimeRemaining() + 60);
+                    timeHelper.setTime(timeHelper.getTimeRemaining() + 60*1000);
                     if(handler != null) {
                         handler.cancel();
-                        handler = new TimerHandler(timeHelper.getTimeRemaining() * 1000L, 1000) {
+                        handler = new TimerHandler(timeHelper.getTimeRemaining(), 100) {
                             @Override
                             public void onTick(long millisUntilFinished) {
-                                timeHelper.setTime((int) (millisUntilFinished / 1000));
+                                timeHelper.setTime(millisUntilFinished);
                                 textView.setText(timeHelper.getTimeRemainingString());
                             }
 
@@ -118,13 +118,13 @@ public class ThirdFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(timeHelper != null) {
-                    timeHelper.setTime(timeHelper.getTimeRemaining() - 60);
+                    timeHelper.setTime(timeHelper.getTimeRemaining() - 60*1000);
                     if(handler != null) {
                         handler.cancel();
-                        handler = new TimerHandler(timeHelper.getTimeRemaining() * 1000L, 1000) {
+                        handler = new TimerHandler(timeHelper.getTimeRemaining(), 100) {
                             @Override
                             public void onTick(long millisUntilFinished) {
-                                timeHelper.setTime((int) (millisUntilFinished / 1000));
+                                timeHelper.setTime(millisUntilFinished);
                                 textView.setText(timeHelper.getTimeRemainingString());
                             }
 
@@ -152,10 +152,10 @@ public class ThirdFragment extends Fragment {
             if(timeHelper != null) {
                 textView.setText(timeHelper.getTimeRemainingString());
                 if(timeHelper.isRunning()) {
-                    handler = new TimerHandler(timeHelper.getTimeRemaining() * 1000L, 1000) {
+                    handler = new TimerHandler(timeHelper.getTimeRemaining(), 100) {
                         @Override
                         public void onTick(long millisUntilFinished) {
-                            timeHelper.setTime((int) (millisUntilFinished / 1000));
+                            timeHelper.setTime(millisUntilFinished);
                             textView.setText(timeHelper.getTimeRemainingString());
                         }
 
@@ -169,27 +169,6 @@ public class ThirdFragment extends Fragment {
                     };
                     handler.start();
                 }
-                /*
-                handler = (TimerHandler) bundle.getSerializable("TimerHelper");
-                if(handler != null) {
-                    handler.cancel();
-                    handler = new TimerHandler(timeHelper.getTimeRemaining() * 1000L, 1000) {
-                        @Override
-                        public void onTick(long millisUntilFinished) {
-                            timeHelper.setTime((int) (millisUntilFinished / 1000));
-                            textView.setText(timeHelper.getTimeRemainingString());
-                        }
-
-                        @Override
-                        public void onFinish() {
-                            super.onFinish();
-                            textView.setText("Timer has ended");
-                            handler = null;
-                            timeHelper = null;
-                        }
-                    };
-                }
-                 */
             } else {
                 textView.setText("No timer set");
             }
