@@ -2,8 +2,10 @@ package com.sp.studylah.Pages;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -28,8 +30,9 @@ public class view3 extends AppCompatActivity {
     private EditText editTextSecond;
     private Button button;
     private Button toggleState;
-    private TimerHandler countDownTimer;
     private ProgressBar progressBar;
+    private final String COUNTDOWN_BR = "com.sp.studylah.countdown_timer_update";
+    private final String COUNTDOWN_BR_SERVICE = "com.sp.studylah.countdown_timer_update2";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,58 +72,33 @@ public class view3 extends AppCompatActivity {
 
                     timeRemaining = (long) hour * 60 * 60 + minute * 60L + second;
                     timeRemaining *= 1000;
-
-                    if(timeHelper != null && countDownTimer != null) {
-                        countDownTimer.cancel();
-                    }
                     timeHelper = new TimeHelper(timeRemaining);
-                    countDownTimer = new TimerHandler(timeRemaining, 100) {
-                        @Override
-                        public void onTick(long millisUntilFinished) {
-                            timeHelper.setTime(millisUntilFinished);
-                            textView.setText(timeHelper.getTimeRemainingString());
-                            progressBar.setProgress((int) (timeHelper.getProgress()/10), true);
-                        }
-
-                        @Override
-                        public void onFinish() {
-                            textView.setText("Time's up!");
-                        }
-                    };
-                    countDownTimer.start();
                     Intent intent = new Intent(context, TimerService.class);
                     intent.putExtra("timeHelper",timeHelper);
                     context.startForegroundService(intent);
                 }
             }
         });
+        BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if(intent.getAction().equals(COUNTDOWN_BR)) {
+                    timeHelper = (TimeHelper) intent.getSerializableExtra("timeHelper");
+                    textView.setText(timeHelper.getTimeRemainingString());
+                    progressBar.setProgress((int) (timeHelper.getProgress()/10), true);
+                }
+            }
+        };
+        registerReceiver(broadcastReceiver, new IntentFilter(COUNTDOWN_BR));
         toggleState = findViewById(R.id.buttonTimerViewStartStop);
         toggleState.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(countDownTimer != null) {
-                    if(timeHelper.isRunning()) {
-                        countDownTimer.cancel();
-                    } else {
-                        countDownTimer = new TimerHandler(timeHelper.getTimeRemaining(), 100) {
-                            @Override
-                            public void onTick(long millisUntilFinished) {
-                                timeHelper.setTime(millisUntilFinished);
-                                textView.setText(timeHelper.getTimeRemainingString());
-                                progressBar.setProgress((int) (timeHelper.getProgress()/10), true);
-
-                            }
-
-                            @Override
-                            public void onFinish() {
-                                textView.setText("Time's up!");
-                                timeHelper = null;
-                                countDownTimer = null;
-                            }
-                        };
-                        countDownTimer.start();
-                    }
+                if(timeHelper != null) {
                     timeHelper.toggleState();
+                    Intent intent = new Intent(COUNTDOWN_BR_SERVICE);
+                    intent.putExtra("timeHelper",timeHelper);
+                    sendBroadcast(intent);
                 } else {
                     button.performClick();
                 }
@@ -136,32 +114,6 @@ public class view3 extends AppCompatActivity {
 
         textView.setText("Time remaining: 00:00:00");
 
-        Bundle bundle = getIntent().getExtras();
-        if(bundle != null) {
-            timeHelper = (TimeHelper) bundle.getSerializable("TimerInstance");
-            if(timeHelper != null) {
-                textView.setText(timeHelper.getTimeRemainingString());
-                progressBar.setProgress((int) (timeHelper.getProgress()/10), true);
-                if(timeHelper.isRunning()) {
-                    handler = new TimerHandler(timeHelper.getTimeRemaining(), 100) {
-                        @Override
-                        public void onTick(long millisUntilFinished) {
-                            timeHelper.setTime(millisUntilFinished);
-                            textView.setText(timeHelper.getTimeRemainingString());
-                            progressBar.setProgress((int) (timeHelper.getProgress()/10), true);
-                        }
-
-                        @Override
-                        public void onFinish() {
-                            textView.setText("Time's up!");
-                            timeHelper = null;
-                            handler = null;
-                        }
-                    };
-                }
-                handler.start();
-            }
-        }
     }
     @Override
     public void finish() {
@@ -170,10 +122,6 @@ public class view3 extends AppCompatActivity {
             Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra("TimerInstance", timeHelper);
             startActivity(intent);
-        }
-        //intent.putExtra("TimerHelper", countDownTimer);
-        if(countDownTimer != null) {
-            countDownTimer.cancel();
         }
     }
 }

@@ -1,6 +1,9 @@
 package com.sp.studylah.carousel_fragments.third_fragment;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -28,6 +31,8 @@ public class ThirdFragment extends Fragment {
     private Button toggleState;
     private Button plus;
     private Button minus;
+    private final String COUNTDOWN_BR = "com.sp.studylah.countdown_timer_update";
+    private final String COUNTDOWN_BR_SERVICE = "com.sp.studylah.countdown_timer_update2";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,9 +51,6 @@ public class ThirdFragment extends Fragment {
                 if(timeHelper != null) {
                     intent.putExtra("TimerInstance", timeHelper);
                 }
-                if(handler != null) {
-                    handler.cancel();
-                }
                 startActivity(intent);
             }
         });
@@ -60,6 +62,7 @@ public class ThirdFragment extends Fragment {
                 if(timeHelper == null) {
                     textView.setText("No timer active!");
                 } else {
+                    /*
                     if (timeHelper.isRunning()) {
                         if (handler != null) {
                             handler.cancel();
@@ -81,7 +84,11 @@ public class ThirdFragment extends Fragment {
                         };
                         handler.start();
                     }
+                     */
                     timeHelper.toggleState();
+                    Intent intent = new Intent(COUNTDOWN_BR_SERVICE);
+                    intent.putExtra("timeHelper", timeHelper);
+                    requireActivity().sendBroadcast(intent);
                 }
             }
         });
@@ -91,6 +98,7 @@ public class ThirdFragment extends Fragment {
             public void onClick(View v) {
                 if(timeHelper != null) {
                     timeHelper.setTime(timeHelper.getTimeRemaining() + 60*1000);
+                    /*
                     if(handler != null) {
                         handler.cancel();
                         handler = new TimerHandler(timeHelper.getTimeRemaining(), 100) {
@@ -110,6 +118,10 @@ public class ThirdFragment extends Fragment {
                         };
                     }
                     textView.setText(timeHelper.getTimeRemainingString());
+                     */
+                    Intent intent = new Intent(COUNTDOWN_BR_SERVICE);
+                    intent.putExtra("timeHelper", timeHelper);
+                    requireActivity().sendBroadcast(intent);
                 } else textView.setText("No timer active!");
             }
         });
@@ -119,6 +131,7 @@ public class ThirdFragment extends Fragment {
             public void onClick(View v) {
                 if(timeHelper != null) {
                     timeHelper.setTime(timeHelper.getTimeRemaining() - 60*1000);
+                        /*
                     if(handler != null) {
                         handler.cancel();
                         handler = new TimerHandler(timeHelper.getTimeRemaining(), 100) {
@@ -137,15 +150,30 @@ public class ThirdFragment extends Fragment {
                             }
                         };
                     }
+                         */
+                    Intent intent = new Intent(COUNTDOWN_BR_SERVICE);
+                    intent.putExtra("timeHelper", timeHelper);
+                    requireActivity().sendBroadcast(intent);
                     textView.setText(timeHelper.getTimeRemainingString());
                 } else textView.setText("No timer active!");
             }
         });
+        BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if(intent.getAction().equals(COUNTDOWN_BR)) {
+                    timeHelper = (TimeHelper) intent.getSerializableExtra("timeHelper");
+                    textView.setText(timeHelper.getTimeRemainingString());
+                }
+            }
+        };
+        requireActivity().registerReceiver(broadcastReceiver, new IntentFilter(COUNTDOWN_BR));
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        /*
         Bundle bundle = getActivity().getIntent().getExtras();
         if(bundle != null) {
             timeHelper = (TimeHelper) bundle.getSerializable("TimerInstance");
@@ -173,6 +201,7 @@ public class ThirdFragment extends Fragment {
                 textView.setText("No timer set");
             }
         }
+         */
     }
 
     @Override
