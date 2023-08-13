@@ -5,6 +5,7 @@
         >
         <Preference
             android:title="About"
+            android:key="About"
             android:summary="About this app"
             />
     </PreferenceCategory>
