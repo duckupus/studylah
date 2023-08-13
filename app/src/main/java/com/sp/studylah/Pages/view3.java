@@ -65,20 +65,7 @@ public class view3 extends AppCompatActivity {
                 if(check == 0) {
                     Toast.makeText(getApplicationContext(), "Please enter a valid value!", Toast.LENGTH_SHORT).show();
                 } else {
-                    /*
-                    Intent notificationIntent = new Intent(getApplicationContext(), view3.class);
-                    PendingIntent pendingIntent = PendingIntent.getActivity(view3.this,
-                            0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
-                    Notification notification = new Notification.Builder(view3.this, "Timer")
-                            .setContentTitle("Timer")
-                            .setContentText("Timer is running!")
-                            .setSmallIcon(R.drawable.ic_launcher_foreground)
-                            .setContentIntent(pendingIntent).build();
-                    getBaseContext().startForegroundService(notificationIntent);
-                     */
                     Context context = getApplicationContext();
-                    Intent intent = new Intent(context, TimerService.class);
-                    context.startForegroundService(intent);
 
                     timeRemaining = (long) hour * 60 * 60 + minute * 60L + second;
                     timeRemaining *= 1000;
@@ -101,6 +88,9 @@ public class view3 extends AppCompatActivity {
                         }
                     };
                     countDownTimer.start();
+                    Intent intent = new Intent(context, TimerService.class);
+                    intent.putExtra("timeHelper",timeHelper);
+                    context.startForegroundService(intent);
                 }
             }
         });
@@ -169,6 +159,7 @@ public class view3 extends AppCompatActivity {
                         }
                     };
                 }
+                handler.start();
             }
         }
     }

@@ -2,9 +2,11 @@ package com.sp.studylah;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -15,7 +17,11 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
+import com.sp.studylah.Pages.view3;
+import com.sp.studylah.carousel_fragments.timer.TimeHelper;
+
 public class TimerService extends Service {
+    public static final String CHANNEL_ID = "TimerServiceChannel";
     private Looper serviceLooper;
     private TimerServiceHandler timerServiceHandler;
 
@@ -45,21 +51,28 @@ public class TimerService extends Service {
     private NotificationManager notificationManager;
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Toast.makeText(this, "Starting the strea- TimerService!", Toast.LENGTH_SHORT).show();
-        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        NotificationChannel channel = new NotificationChannel("timer_service_channel", "TimerService", NotificationManager.IMPORTANCE_DEFAULT);
-        notificationManager.createNotificationChannel(channel);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "TimerService")
+        assert intent.getExtras() != null;
+        TimeHelper timeHelper = (TimeHelper) intent.getExtras().getSerializable("timeHelper");
+        assert timeHelper != null;
+
+        createNotificationChannel();
+        Intent notificationIntent = new Intent(this, view3.class);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        notificationIntent.putExtra("timeHelper", timeHelper);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
-                .setContentTitle("TimerService")
+                .setContentTitle("Countdown Timer")
                 .setContentText("TimerService is running!")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                .setContentIntent(pendingIntent);
         startForeground(1, builder.build());
 
         Message msg = timerServiceHandler.obtainMessage();
         msg.arg1 = startId;
         timerServiceHandler.sendMessage(msg);
-        return START_STICKY;
+        while(timeHelper.getProgress() > 0.0);
+        return START_NOT_STICKY;
     }
 
     @Nullable
@@ -72,5 +85,16 @@ public class TimerService extends Service {
     public  void onDestroy() {
         super.onDestroy();
         Toast.makeText(this, "Stopping the strea- TimerService!", Toast.LENGTH_SHORT).show();
+    }
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel serviceChannel = new NotificationChannel(
+                    CHANNEL_ID,
+                    "Timer Service Channel",
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+            notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(serviceChannel);
+        }
     }
 }
