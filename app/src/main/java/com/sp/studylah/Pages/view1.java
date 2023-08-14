@@ -2,6 +2,7 @@ package com.sp.studylah.Pages;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
@@ -28,6 +29,8 @@ public class view1 extends AppCompatActivity {
     private RadioButton radioButtonExam;
     private RadioButton radioButtonAssignment;
     private DatabaseHelper databaseHelper;
+    private Button btnShareToWhatsApp;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +57,14 @@ public class view1 extends AppCompatActivity {
             saveData();
         }
     });
+        btnShareToWhatsApp = findViewById(R.id.btnShareToWhatsApp);
+
+        btnShareToWhatsApp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shareToWhatsApp();
+            }
+        });
 }
 
 
@@ -89,6 +100,22 @@ public class view1 extends AppCompatActivity {
         //set the background color of the Save Button programmatically
         int buttonColor = getResources().getColor(R.color.button_color);
         buttonSave.setBackgroundColor(buttonColor);
+    }
+    private void shareToWhatsApp() {
+        String message = "Hello! I have an upcoming assignment/exam on [date]. Don't forget to prepare!";
+
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, message);
+        sendIntent.setType("text/plain");
+        sendIntent.setPackage("com.whatsapp"); // Specify WhatsApp package name
+
+        try {
+            startActivity(sendIntent);
+        } catch (ActivityNotFoundException ex) {
+            // Handle case where WhatsApp is not installed
+            Toast.makeText(this, "WhatsApp is not installed.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
