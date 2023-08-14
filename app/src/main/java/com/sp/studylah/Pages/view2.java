@@ -86,9 +86,9 @@ public class view2 extends AppCompatActivity {
                     null
             );
             cursorAdapter.swapCursor(updatedCursor);
-            Toast.makeText(this, "Assignments Cleared", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Assignments Cleared, Please refresh the page", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(this, "Assignments Not Cleared", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "No Assignments to clear", Toast.LENGTH_SHORT).show();
         }
     }
 

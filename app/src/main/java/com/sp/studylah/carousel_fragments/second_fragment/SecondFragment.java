@@ -34,7 +34,7 @@ private FragmentSecondBinding binding;
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         TextView textView = view.findViewById(R.id.textview_second);
-        textView.setText("Page 2\n");
+        textView.setText("View your assignments here!");
         layout = view.findViewById(R.id.fragment_second);
         layout.setOnClickListener(new View.OnClickListener() {
             @Override

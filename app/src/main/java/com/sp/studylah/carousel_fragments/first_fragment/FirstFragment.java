@@ -4,9 +4,12 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -34,6 +37,7 @@ public class FirstFragment extends Fragment {
     private DatabaseHelper databaseHelper;
     private TextView textViewAssignment;
     private SQLiteDatabase db;
+
 
     @Override
     public View onCreateView(
@@ -68,7 +72,7 @@ public class FirstFragment extends Fragment {
         Date date = Calendar.getInstance().getTime();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         String formattedDate = dateFormat.format(date); //damnit I need to subtract zzz
-        int year = Integer.parseInt(formattedDate.substring(0,4));
+        int year = Integer.parseInt(formattedDate.substring(0, 4));
         year -= 1900;
         String newDate = String.valueOf(year) + formattedDate.substring(4, formattedDate.length());
         String selector = DatabaseContract.AssignmentEntry.COLUMN_DATE + "=" + newDate;
@@ -83,18 +87,13 @@ public class FirstFragment extends Fragment {
                 null,
                 null,
                 null);
-        if(cursor == null) {
+        if (cursor == null) {
             textViewAssignment.setText("You have no assignments due today!");
         } else {
             cursor.moveToFirst();
             String displayAssignmentCount = "You have " + cursor.getCount() + " assignments due today!";
             textViewAssignment.setText(displayAssignmentCount);
         }
-        /*
-        String displayAssignmentCount = "You have " + cursor.getCount() + " assignments due today!";
-        textViewAssignment.setText("  DATE: " + formattedDate + '\n' + "  NEW DATE: " + newDate
-                + '\n' + "  CURSOR COUNT: " + cursor.getCount()); */
-        //textViewAssignment.setText(displayAssignmentCount);
         super.onResume();
     }
 
@@ -105,3 +104,4 @@ public class FirstFragment extends Fragment {
     }
 
 }
+

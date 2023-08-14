@@ -77,7 +77,12 @@
             android:text="Start/Stop"
             android:fontFamily="@font/hardpixel"
             app:layout_constraintTop_toTopOf="parent" />
-
+        <ImageView
+            android:id = "@+id/myImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/clockstudylah"
+            android:layout_gravity="center" />
     </LinearLayout>
 
 </LinearLayout>

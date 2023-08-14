@@ -7,4 +7,24 @@
     android:id="@+id/fragment_first"
     android:layout_gravity="center_horizontal"
     android:background="@drawable/rectangle_border">
+
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/todayAssignments"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Assignments due today: 0"
+        android:textSize="40sp"
+        android:layout_margin="16dp"
+        android:gravity="bottom|center"/>
+
+    <ImageView
+        android:id = "@+id/myImage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/calendarstudylah"
+        android:layout_gravity="center" />
+</FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -80,11 +80,12 @@ public class view1 extends AppCompatActivity {
         finish();
 
         //check if data was saved
-        if (newRowId != 1) {
+        if (newRowId != 0) {
             Toast.makeText(this, "Date saved successfully!", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(this, "An error has occured", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "An error has occurred", Toast.LENGTH_SHORT).show();
         }
+        onResume();
         //set the background color of the Save Button programmatically
         int buttonColor = getResources().getColor(R.color.button_color);
         buttonSave.setBackgroundColor(buttonColor);
