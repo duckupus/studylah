@@ -81,7 +81,7 @@
             android:id = "@+id/myImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/clockstudylah"
+            android:src="@drawable/clockstudylah"
             android:layout_gravity="center" />
     </LinearLayout>
 

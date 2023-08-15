@@ -28,10 +28,7 @@ public class view2 extends AppCompatActivity {
     private DatabaseHelper databaseHelper;
 
     void shareToWhatsApp(String type, String date, String description ) {
-        String message = "I have [workType] [description] at [date]";
-        message = message.replace("[date]", date);
-        message = message.replace("[workType]", type);
-        message = message.replace("[description]", description);
+        String message = "I have " + type + " " + description + " at " + date + ".";
 
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
