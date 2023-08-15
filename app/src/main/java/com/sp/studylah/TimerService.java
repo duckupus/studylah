@@ -1,5 +1,6 @@
 package com.sp.studylah;
 
+import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -8,11 +9,16 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -20,6 +26,8 @@ import androidx.core.app.NotificationCompat;
 
 import com.sp.studylah.Pages.view3;
 import com.sp.studylah.carousel_fragments.timer.TimeHelper;
+
+import java.util.concurrent.TimeUnit;
 
 public class TimerService extends Service {
     public static final String CHANNEL_ID = "TimerServiceChannel";
@@ -56,6 +64,7 @@ public class TimerService extends Service {
     private NotificationCompat.Builder builder;
     private final String COUNTDOWN_BR = "com.sp.studylah.countdown_timer_update";
     private final String COUNTDOWN_BR_SERVICE = "com.sp.studylah.countdown_timer_update2";
+    private BroadcastReceiver serviceBroadcastReceiver;
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         assert intent.getExtras() != null;
@@ -85,7 +94,7 @@ public class TimerService extends Service {
                 stopSelf();
             }
         };
-        BroadcastReceiver serviceBroadcastReceiver = new BroadcastReceiver() {
+        serviceBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (intent.getAction().equals(COUNTDOWN_BR_SERVICE)) {
@@ -167,6 +176,16 @@ public class TimerService extends Service {
     public  void onDestroy() {
         super.onDestroy();
         Toast.makeText(this, "Time finished! Goodbye!", Toast.LENGTH_SHORT).show();
+        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+        Ringtone ringtone = RingtoneManager.getRingtone(getApplicationContext(), alarmSound);
+        ringtone.play();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                ringtone.stop();
+            }
+        }, 5000);
+        unregisterReceiver(serviceBroadcastReceiver);
     }
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
