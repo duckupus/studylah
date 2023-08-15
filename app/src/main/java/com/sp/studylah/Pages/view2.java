@@ -47,7 +47,6 @@ public class view2 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view2);
-        overridePendingTransition(R.anim.zoom_in, R.anim.zoom_out);
 
         setContentView(R.layout.activity_view2);
                 // Find the ListView by its ID
